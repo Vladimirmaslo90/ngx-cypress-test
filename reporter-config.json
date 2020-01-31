@@ -1,0 +1,11 @@
+{
+  "reporterEnabled": "mocha-junit-reporter",
+  "reporterOptions": {
+    "overwrite": false,
+    "html": false,
+    "json": true
+  },
+  "mochaJunitReporterReporterOptions": {
+    "mochaFile": "reports/results.xml"
+  }
+}
