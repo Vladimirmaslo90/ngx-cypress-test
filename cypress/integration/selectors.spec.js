@@ -1,64 +1,65 @@
 /// <reference types="cypress" />
 
-describe('Our first suite', () => {
-  it('first test', () => {
+import { lab } from "d3-color";
 
-    cy.visit('/')
-    cy.contains('Forms').click()
-    cy.contains('Form Layouts').click()
+describe("Our first suite", () => {
+  it("first test", () => {
+    cy.visit("/");
+    cy.contains("Forms").click();
+    cy.contains("Form Layouts").click();
     //by Tag name
-    cy.get('input')
+    cy.get("input");
 
     //by Id
-    cy.get('#inputEmail')
+    cy.get("#inputEmail");
 
     //by Class name
-    cy.get('.input-full-width')
+    cy.get(".input-full-width");
 
     //by attribute name
-    cy.get('[placeholder]');
+    cy.get("[placeholder]");
 
     //by attribute name and value
     cy.get('[placeholder="Email"]');
 
     //by class Value
-    cy.get('[class="input-full-width size-medium shape-rectangle"]')
+    cy.get('[class="input-full-width size-medium shape-rectangle"]');
 
     //by tag name and attribute and value
-    cy.get('input[placeholder="Email"]')
+    cy.get('input[placeholder="Email"]');
 
     //by 2 different attributes
-    cy.get('[placeholder="Email"][type="Email"]')
+    cy.get('[placeholder="Email"][type="Email"]');
 
     // by tag name, attribute with valu, id and class name
-    cy.get('input[placeholder="Email"]#inputEmail1.input-full-width')
+    cy.get('input[placeholder="Email"]#inputEmail1.input-full-width');
 
-    //the most recommended way 
+    //the most recommended way
     cy.get('[data-cy="imputEmail1"]');
-  })
-  it('second test', () => {
-    cy.visit('/')
-    cy.contains('Forms').click()
-    cy.contains('Form Layouts').click()
+  });
+  it("second test", () => {
+    cy.visit("/");
+    cy.contains("Forms").click();
+    cy.contains("Form Layouts").click();
 
     cy.get('[data-cy="signInButton"]');
-    cy.contains('Sign in');
-    cy.contains('[status="warning"]', 'Sign in');
+    cy.contains("Sign in");
+    cy.contains('[status="warning"]', "Sign in");
 
-    cy.get('#inputEmail3')
-      .parents('form')
-      .find('button')
-      .should('contain', 'Sign in')
-      .parents('form')
-      .find('nb-checkbox')
-      .click()
+    cy.get("#inputEmail3")
+      .parents("form")
+      .find("button")
+      .should("contain", "Sign in")
+      .parents("form")
+      .find("nb-checkbox")
+      .click();
 
-    cy.contains('nb-card', 'Horizontal form').find('[type="Email"]')
-  })
-  it('then and wrap methods', () => {
-    cy.visit('/')
-    cy.contains('Forms').click()
-    cy.contains('Form Layouts').click()
+    cy.contains("nb-card", "Horizontal form").find('[type="Email"]');
+  });
+  it("then and wrap methods", () => {
+    cy.visit("/");
+    cy.contains("Forms").click();
+    cy.contains("Form Layouts").click();
 
     // cy.contains('nb-card', 'Using the Grid').find('[for="inputEmail1"]').should('contain', 'Email')
     // cy.contains('nb-card', 'Using the Grid').find('[for="inputPassword2"]').should('contain', 'Password')
@@ -77,12 +78,55 @@ describe('Our first suite', () => {
     // secondForm.find('[for="exampleInputPassword1"]').should('contain', 'Password')
 
     //cypress style
-    cy.contains('nb-card', 'Using the Grid').then(firstForm => {
+    cy.contains("nb-card", "Using the Grid").then(firstForm => {
       const emailLabelFirst = firstForm.find('[for="inputEmail1"]').text();
-      const passwordLabelFirst = firstForm.find('[for="inputPassword2"]').text();
+      const passwordLabelFirst = firstForm
+        .find('[for="inputPassword2"]')
+        .text();
 
-      expect(emailLabelFirst).to.equal('Email');
-      expect(passwordLabelFirst).to.equal('Password');
-    })
-  })
-})
+      expect(emailLabelFirst).to.equal("Email");
+      expect(passwordLabelFirst).to.equal("Password");
+
+      cy.contains("nb-card", "Basic form").then(secondForm => {
+        const passwordSecondText = secondForm
+          .find('[for="exampleInputPassword1"]')
+          .text();
+        expect(passwordLabelFirst).to.equal(passwordSecondText);
+
+        cy.wrap(secondForm)
+          .find('[for="exampleInputEmail1"]')
+          .should("contain", "Email address");
+      });
+    });
+  });
+  it("invoke command", () => {
+    cy.visit("/");
+    cy.contains("Forms").click();
+    cy.contains("Form Layouts").click();
+
+    //1
+    cy.get('[for="exampleInputEmail1"]').should("contain", "Email address");
+
+    //2
+    cy.get('[for="exampleInputEmail1"]').then(label => {
+      expect(label.text()).to.equal("Email address");
+    });
+
+    //3 with invoke
+    cy.get('[for="exampleInputEmail1"]')
+      .invoke("text")
+      .then(text => {
+        expect(text).to.equal("Email address");
+      });
+
+    cy.contains("nb-card", "Basic form")
+      .find("nb-checkbox")
+      .click()
+      .find(".custom-checkbox")
+      .invoke("attr", "class")
+      //.should("contain", "checked");
+      .then(classValue => {
+        expect(classValue).to.contain("checked");
+      });
+  });
+});
